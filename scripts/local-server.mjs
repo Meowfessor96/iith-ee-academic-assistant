@@ -1,3 +1,4 @@
+import { creditProgress, isCreditOverview } from '../public/credit-context.js'
 import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import { extname, resolve, sep } from 'node:path'
@@ -64,10 +65,19 @@ async function api(path, request, response) {
   const question = typeof body.question === 'string' ? body.question.trim() : ''
   if (!question || question.length > 2000) return json(response, 400, { error: 'Enter a question under 2,000 characters.' })
   const previous = Array.isArray(body.history) ? body.history.slice(-6).findLast(item => item?.role === 'user' && typeof item.content === 'string') : null
-  const { sources, evidence, text } = searchSources(question, previous?.content.slice(0, 2000), attachment)
+  const progress = creditProgress(body.creditSummary)
+  const overview = isCreditOverview(question) && !attachment
+  const result = overview
+    ? { sources: progress ? [progress.source] : [], text: progress?.overview || 'Select “Include credit calculator totals” or use “Ask about my credits” in the Credit Calculator.' }
+    : searchSources(question, previous?.content.slice(0, 2000), attachment)
+  const { sources, evidence, text } = result
+  if (progress && !overview && ragMode && evidence) {
+    sources.push(progress.source)
+    evidence.push(progress.source.text)
+  }
   const citations = sources.map(({ title, location, url, note }, index) => ({ number: index + 1, title, location, url, note }))
   let answer = text
-  let mode = evidence ? 'search' : 'timetable'
+  let mode = overview ? 'calculator' : evidence ? 'search' : 'timetable'
   if (ragMode && evidence?.some(Boolean)) {
     const cancellation = new AbortController()
     response.once('close', () => cancellation.abort())

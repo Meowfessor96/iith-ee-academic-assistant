@@ -1,7 +1,7 @@
 const maxFileBytes = 4 * 1024 * 1024
 const maxTextLength = 50000
 
-export async function readAttachment(file) {
+export async function readAttachment(file, { allowImages = false } = {}) {
   if (!file) return null
   if (typeof file.name !== 'string' || typeof file.data !== 'string' ||
       !/^[A-Za-z0-9+/]+={0,2}$/.test(file.data)) {
@@ -11,11 +11,26 @@ export async function readAttachment(file) {
   if (!bytes.length || bytes.length > maxFileBytes) throw new Error('Choose a non-empty file no larger than 4 MB.')
   const name = file.name.slice(0, 200).replace(/[\r\n]/g, ' ')
   if (/\.(txt|md|csv)$/i.test(name)) return { name, text: limitText(bytes.toString('utf8')) }
-  if (!/\.pdf$/i.test(name) || bytes.subarray(0, 5).toString() !== '%PDF-') {
+  if (/\.pdf$/i.test(name)) {
+    if (bytes.subarray(0, 5).toString() !== '%PDF-') throw new Error('This file does not contain a valid PDF.')
+  } else {
+    if (allowImages) {
+      const png = bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+      const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255
+      const webp = bytes.subarray(0, 4).toString() === 'RIFF' && bytes.subarray(8, 12).toString() === 'WEBP'
+      const type = png ? 'png' : jpeg ? 'jpeg' : webp ? 'webp' : ''
+      if (type) return { name, image: 'data:image/' + type + ';base64,' + file.data }
+      throw new Error('Choose a text PDF, CSV, TXT, Markdown, PNG, JPG, or WEBP file.')
+    }
     throw new Error('Choose a text PDF, CSV, TXT, or Markdown document.')
   }
 
-  const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs')
+  const [{ getDocument }, { WorkerMessageHandler }] = await Promise.all([
+    import('pdfjs-dist/legacy/build/pdf.mjs'),
+    import('pdfjs-dist/legacy/build/pdf.worker.mjs')
+  ])
+  // The worker import is explicit so the Netlify bundle includes it.
+  globalThis.pdfjsWorker ??= { WorkerMessageHandler }
   const task = getDocument({ data: new Uint8Array(bytes), useSystemFonts: true })
   const pages = []
   try {
@@ -54,7 +69,10 @@ export async function readAttachment(file) {
     await task.destroy()
   }
   const text = pages.map(page => page.text).join('\n')
-  if (!text.trim()) throw new Error('This PDF has no selectable text. Use a text PDF, CSV, or enter the courses manually.')
+  if (!text.trim()) {
+    const alternative = allowImages ? 'Upload a clear image of the relevant page or export the table as CSV.' : 'Use a text PDF or CSV.'
+    throw new Error('This PDF has no selectable text. ' + alternative)
+  }
   return { name, text, pages }
 }
 
@@ -81,8 +99,8 @@ export function extractCourses({ text }) {
     if (delimiter) {
       const cells = splitColumns(line, delimiter)
       const headings = cells.map(cell => cell.toLowerCase().replace(/[^a-z]/g, ''))
-      const creditColumn = headings.findIndex(value => /^(credits?|coursecredits?|creditunits?)$/.test(value))
-      const codeColumn = headings.findIndex(value => /^(code|coursecode|courseno|coursenumber)$/.test(value))
+      const creditColumn = headings.findIndex(value => /^(credits?|coursecredits?|creditunits?|units?)$/.test(value))
+      const codeColumn = headings.findIndex(value => /^(code|coursecode|courseid|courseno|coursenumber)$/.test(value))
       const nameColumn = headings.findIndex(value => /^(name|title|coursename|coursetitle|course)$/.test(value))
       if (creditColumn >= 0 && (nameColumn >= 0 || codeColumn >= 0)) {
         table = { creditColumn, codeColumn, nameColumn, delimiter, columns: cells.length }

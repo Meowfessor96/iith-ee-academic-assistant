@@ -1,8 +1,10 @@
+import { progressQuestion } from './credit-context.js'
 import { setupCourseBrowser } from './course-browser.js'
 import { setupCalculator } from './calculator.js'
 import { encodeFile } from './files.js'
 
 const form = document.querySelector('#chatForm')
+const shareCreditTotals = document.querySelector('#shareCreditTotals')
 const input = document.querySelector('#question')
 const conversation = document.querySelector('#conversation')
 const welcome = document.querySelector('#welcome')
@@ -77,7 +79,7 @@ function addSources(number, sources) {
   container.append(list)
 }
 
-async function ask(question) {
+async function ask(question, { includeAttachment = true } = {}) {
   question = question.trim()
   if (!question || busy || readingFile) return
   busy = true
@@ -100,7 +102,10 @@ async function ask(question) {
   activeRequest = request
   const timeout = AbortSignal.timeout(60000)
   try {
-    const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question, history, attachment }), signal: AbortSignal.any([request.signal, timeout]) })
+    const creditSummary = shareCreditTotals.checked ? getCreditSnapshot() : undefined
+    const chatHistory = history.filter(message => creditSummary || !message.sharedCredits)
+      .map(({ role, content }) => ({ role, content }))
+    const response = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question, history: chatHistory, attachment: includeAttachment ? attachment : null, creditSummary }), signal: AbortSignal.any([request.signal, timeout]) })
     if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(data.error || 'Unable to reach the assistant. Please try again.') }
     if (!response.body) throw new Error('Unable to reach the assistant. Please try again.')
     const reader = response.body.getReader()
@@ -116,7 +121,7 @@ async function ask(question) {
         const event = JSON.parse(line)
         if (event.type === 'sources') {
           sources = event.sources
-          const modes = { search: 'SOURCE SEARCH', timetable: 'TIMETABLE LOOKUP', 'local-model': 'LOCAL AI' }
+          const modes = { search: 'SOURCE SEARCH', timetable: 'TIMETABLE LOOKUP', calculator: 'CREDIT CALCULATOR', 'local-model': 'LOCAL AI' }
           if (Object.hasOwn(modes, event.mode)) reply.item.querySelector('.message-label').textContent += ' · ' + modes[event.mode]
         }
         if (event.type === 'text') {
@@ -132,7 +137,7 @@ async function ask(question) {
     }
     if (!complete || !answer) throw new Error('The answer was interrupted. Please try again.')
     addSources(number, sources)
-    history.push({ role: 'user', content: question }, { role: 'assistant', content: answer })
+    history.push({ role: 'user', content: question, sharedCredits: Boolean(creditSummary) }, { role: 'assistant', content: answer, sharedCredits: Boolean(creditSummary) })
   } catch (error) {
     if (request.signal.aborted) return
     reply.text.classList.remove('thinking')
@@ -162,6 +167,7 @@ document.querySelector('#newChat').addEventListener('click', () => {
   busy = false
   sendButton.disabled = readingFile
   history = []
+  shareCreditTotals.checked = false
   answerNumber = 0
   attachment = null
   chatFile.value = ''
@@ -226,4 +232,10 @@ if (local) {
     : 'Searches the local source library. Attach a text document to find matching lines.'
 }
 setupCourseBrowser()
-setupCalculator({ local })
+const getCreditSnapshot = setupCalculator({ local })
+document.querySelector('#askCreditProgress').addEventListener('click', () => {
+  setView('chat')
+  shareCreditTotals.checked = true
+  input.value = progressQuestion
+  ask(progressQuestion, { includeAttachment: false })
+})

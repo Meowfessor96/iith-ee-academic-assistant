@@ -21,7 +21,7 @@ Open [EE Academic Assistant](http://127.0.0.1:3000). Set the `PORT` environment 
 - **Courses & instructors** in the sidebar shows the department timetable. Search by instructor name, course code, or title, and filter by programme.
 - **Credit calculator** saves progress in this browser. Review each extracted course and select only completed courses before adding them.
 
-Local operation needs no API key or hosted service. Node.js handles the browser's `POST /api/chat` and `POST /api/extract` requests. PDF.js reads selectable PDF text on your computer. The existing Netlify deployment files use Netlify AI Gateway through the OpenAI SDK for chat and extraction and Netlify Identity with Netlify Database for account sync. Those services do not run with `npm start`.
+Local operation needs no API key or hosted service. Node.js handles the browser's `POST /api/chat` and `POST /api/extract` requests. PDF.js reads selectable PDF text on your computer. The Netlify build uses Netlify AI Gateway for chat and optional document extraction, and Netlify Identity with Netlify Database for account sync. Those services do not run with `npm start`.
 
 ## Optional local RAG mode
 
@@ -40,7 +40,7 @@ The project sends retrieved passages to the model over loopback. Initial model d
 
 ## Document import
 
-Use a text PDF of up to 30 pages, CSV, TXT, or Markdown. Files can be up to 4 MB. Local import reads explicitly labeled credits from supported table layouts or text lines. Scanned PDFs and images require manual entry or conversion to a text PDF or CSV first.
+Use a text PDF of up to 30 pages, CSV, TXT, or Markdown. Files can be up to 4 MB. The local and Netlify builds read explicitly labeled credits from supported table layouts or text lines. The Netlify build can use AI extraction for an unsupported layout or an uploaded image. For a scanned PDF, export the table as CSV or upload a clear image of the relevant page to the Netlify build.
 
 The most reliable input is a CSV with these headers:
 
@@ -50,6 +50,10 @@ EE1101,Circuits and Network Analysis,3
 ```
 
 A plain text line can also say `EE1101 Circuits and Network Analysis — 3 credits`. If a registration PDF has an unsupported layout, export it to CSV or enter the courses manually.
+
+## Ask about calculator progress
+
+Choose **Ask about my credits** in the Credit Calculator for a breakdown of completed credits and remaining targets. To include calculator figures with another chat question, select **Include credit calculator totals** in the composer. Chat receives numeric totals and targets, without the underlying course entries or uploaded documents. Starting a new conversation clears the selection.
 
 ## Deploy from GitHub
 

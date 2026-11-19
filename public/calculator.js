@@ -1,4 +1,5 @@
 import { encodeFile } from './files.js'
+import { snapshotCredits } from './credit-context.js'
 import { baskets, categories, courseCategories, detailDefaults, basketDefaults, freshPlan, normalizePlan, calculatePlan, suggestCourse, creditNumber as number } from './credit-model.js'
 
 const storageKey = 'ee-academic-calculator-guest-v1'
@@ -165,7 +166,7 @@ export function setupCalculator({ local = false } = {}) {
       })
       const data = await response.json().catch(() => null)
       if (!response.ok || !Array.isArray(data?.courses)) {
-        throw new Error(data?.error || 'The document reader returned an invalid response. Please try again.')
+        throw new Error(data?.error || 'The document reader could not finish. Try again with a smaller file or export the course table as CSV.')
       }
       pendingImport = data.courses.map(course => {
         const suggestion = suggestCourse(course.code, course.name)
@@ -175,7 +176,7 @@ export function setupCalculator({ local = false } = {}) {
       if (!pendingImport.length) {
         importMessage.textContent = local
           ? 'No course rows with explicit credits were found. Use a CSV with Code, Course Name, and Credits columns, or add the courses manually.'
-          : 'No courses with clearly stated credits were found. Add them manually.'
+          : 'No course rows with explicit credits were found. Try a CSV with Code, Course Name, and Credits columns, or add them manually.'
         return
       }
       importMessage.textContent = 'Select completed courses after reviewing their credits and categories.'
@@ -252,11 +253,13 @@ export function setupCalculator({ local = false } = {}) {
     render(); status.textContent = 'Guest · saved on this device'; dialog.close()
   })
   render()
-  if (local) { status.textContent = 'Saved on this device'; return }
+  const getCreditSnapshot = () => snapshotCredits(plan)
+  if (local) { status.textContent = 'Saved on this device'; return getCreditSnapshot }
   getIdentity().then(async auth => {
     const callback = await auth.handleAuthCallback()
     if (callback?.type === 'recovery') { recovery = true; setUser(null); document.querySelector('#authForm [name="email"]').value = callback.user?.email || ''; authMessage.textContent = 'Enter your new password and select Sign in.'; dialog.showModal(); return }
     const current = await auth.getUser()
     if (current) await loadAccount(current)
   }).catch(() => { status.textContent = 'Guest · account service unavailable' })
+  return getCreditSnapshot
 }

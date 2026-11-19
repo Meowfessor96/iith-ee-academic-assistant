@@ -89,3 +89,5 @@ dialog{width:min(440px,calc(100% - 32px));border:1px solid #e0ebdc;border-radius
 .semester-table th,.semester-table td{padding:10px 12px;border-bottom:1px solid #e7ede5;vertical-align:top}
 .semester-table th{background:#edf4e7;font-weight:700}
 .semester-table td:first-child,.semester-table td:nth-child(n+5){white-space:nowrap}
+
+.credit-share{display:flex;padding:.45rem .15rem .2rem;color:#395347;font-size:.74rem}.credit-share label{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer}.credit-share input{accent-color:#284a39}.total-strip{flex-wrap:wrap}.total-strip #askCreditProgress{color:#284a39;background:#eef3e9}
