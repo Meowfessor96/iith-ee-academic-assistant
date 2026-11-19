@@ -2,6 +2,10 @@
 
 A local source search and credit calculator for IIT Hyderabad Electrical Engineering students.
 
+## Open the live app
+
+[Launch the Academic Assistant](https://meowfessor96.github.io/iith-ee-academic-assistant/) to use the hosted chat, credit planner, and email sign-in. The GitHub Pages link opens the working Netlify build, where the account and chat services run. The hosted build predates the course browser in this repository.
+
 ## Run locally
 
 Install Node.js 22.13 or newer. From the project directory, run:
