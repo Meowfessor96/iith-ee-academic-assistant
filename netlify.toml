@@ -2,5 +2,8 @@
   command = "npm ci --ignore-scripts --no-audit --no-fund && node scripts/build-client.mjs"
   publish = "public"
 
+[build.environment]
+NODE_VERSION = "24"
+
 [server]
   path = "/api/*"
