@@ -16,4 +16,7 @@ jobs:
         run: |
           docker build -t ee-assistant .
           docker run -d --name ee-assistant -p 127.0.0.1:3000:3000 ee-assistant
-          curl --fail --retry 8 --retry-connrefused http://127.0.0.1:3000/
+          if ! curl --fail --silent --show-error --output /dev/null --max-time 5 --retry 8 --retry-all-errors --retry-delay 1 http://127.0.0.1:3000/; then
+            docker logs ee-assistant
+            exit 1
+          fi
