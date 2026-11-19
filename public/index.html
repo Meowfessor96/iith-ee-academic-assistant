@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EE Academic Assistant | IIT Hyderabad</title>
+  <meta name="description" content="Find your way through IIT Hyderabad Electrical Engineering academics with source-backed answers to your questions.">
+  <meta property="og:title" content="EE Academic Assistant | IIT Hyderabad">
+  <meta property="og:description" content="A source-backed guide to Electrical Engineering academics at IIT Hyderabad.">
+  <meta name="theme-color" content="#f7f7f1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/workspace.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/" aria-label="EE Academic Assistant home"><span class="brand-mark"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 23V9h6v14M19 23V9h6M19 16h5M19 23h6" stroke="currentColor" stroke-width="2.4"/><path d="M3 26h26" stroke="currentColor" stroke-width="1.5"/></svg></span><span><strong>EE Academic</strong><small>IIT HYDERABAD</small></span></a>
+      <div class="sidebar-rule"></div>
+      <button class="new-chat" id="newChat"><span>＋</span> New conversation <span class="shortcut">↗</span></button>
+      <div class="side-label">YOUR WORKSPACE</div>
+      <button class="workspace-link nav-active" data-view="chat"><span class="nav-icon">◫</span> Academic assistant</button>
+      <button class="workspace-link" data-view="calculator"><span class="nav-icon">◈</span> Credit calculator</button>
+      <button class="workspace-link" data-view="courses"><span class="nav-icon">▦</span> Courses &amp; instructors</button>
+      <button class="workspace-link" data-view="resources"><span class="nav-icon">▤</span> Sources &amp; links</button>
+      <div class="sidebar-bottom"><div class="side-help"><span class="help-icon">✳</span><div><strong>Know your context.</strong><p>Curricula vary by batch. Verify decisions with the Academic Office.</p></div></div><div class="side-footer">INDEPENDENT STUDENT GUIDE <span>✳</span></div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><button class="mobile-menu" id="menuButton" aria-label="Open navigation" aria-expanded="false">☰</button><div class="breadcrumb">WORKSPACE <span>/</span> <strong id="viewTitle">ACADEMIC ASSISTANT</strong></div><nav class="top-nav" aria-label="Workspace"><button class="top-view active" data-view="chat">Chat</button><button class="top-view" data-view="calculator">Calculator</button><button class="top-view" data-view="resources">Sources</button></nav><button class="account-button" id="accountButton">Sign in</button></header>
+      <div class="main-content chat-view" id="chatView">
+        <div class="chat-scroll" id="chatScroll">
+        <section class="welcome" id="welcome">
+          <div class="eyebrow"><span class="spark">✳</span> YOUR ACADEMIC COMPANION <span class="eyebrow-line"></span> IIT HYDERABAD</div>
+          <h1>Good questions<br>deserve <em>clear answers.</em></h1>
+          <p class="intro">Your guide to academics in Electrical Engineering.<br class="desktop-break"> Ask about courses, credits, calendars, and more.</p>
+          <div class="prompt-heading"><span>NOT SURE WHERE TO START?</span><span>01 — 04</span></div>
+          <div class="prompt-grid">
+            <button class="prompt-card" data-prompt="What courses are in the first semester of the 2020 EE BTech curriculum?"><span class="card-icon">▤</span><span class="card-copy"><strong>Explore the curriculum</strong><small>What does the EE course structure look like?</small></span><span class="card-arrow">↗</span></button>
+            <button class="prompt-card" data-prompt="What are the requirements for an EE minor?"><span class="card-icon">◈</span><span class="card-copy"><strong>Understand your credits</strong><small>What are the requirements for an EE minor?</small></span><span class="card-arrow">↗</span></button>
+            <button class="prompt-card" data-prompt="What are the key dates in the July–November 2026 academic calendar?"><span class="card-icon">▦</span><span class="card-copy"><strong>Check important dates</strong><small>What’s on the academic calendar?</small></span><span class="card-arrow">↗</span></button>
+            <button class="prompt-card" data-prompt="What are the coursework requirements for an EE PhD student?"><span class="card-icon">⌁</span><span class="card-copy"><strong>Navigate academic rules</strong><small>What are the EE PhD requirements?</small></span><span class="card-arrow">↗</span></button>
+          </div>
+        </section>
+        <section class="conversation" id="conversation" aria-live="polite" aria-label="Conversation"></section>
+        </div>
+        <div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-top"><label class="attach-button" title="Attach a document or image"><span aria-hidden="true">＋</span><span class="sr-only">Attach a PDF, text file, or image</span><input id="chatFile" type="file" accept=".pdf,.txt,.md,.csv,image/png,image/jpeg,image/webp"></label><textarea id="question" rows="1" maxlength="2000" placeholder="Ask anything about EE academics..." aria-label="Your academic question"></textarea><button class="send" id="sendButton" aria-label="Send question" type="submit">↑</button></div><div class="attachment-label" id="chatAttachment" role="status" hidden></div><div class="composer-bottom"><span><span class="tiny-dot"></span> GROUNDED IN IITH SOURCES</span><span>ENTER TO SEND <span class="enter-key">↵</span></span></div></form><p class="disclaimer">AI can make mistakes. Verify important information with official sources. Files are sent for AI processing, not stored.</p></div>
+      </div>
+      <section class="workspace-page" id="calculatorView" hidden>
+        <div class="section-kicker">YOUR ACADEMIC WORKSPACE / 02</div><div class="page-heading"><div><h1>Make every <em>credit count.</em></h1><p>Keep a working picture of your progress, one course at a time.</p></div><span class="page-number">02</span></div>
+        <div class="notice"><strong>For planning, not certification.</strong> Stream and department targets use the February 2021 rulebook for the 2020 EE BTech batch. The combined 13-credit LA/CA and soft-skills target is your proposed grouping, not an official 2020 rule. Verify classifications and requirements for your batch.</div>
+        <div class="calculator-head"><div><h2>Credit overview</h2><p>Manual credits and course credits are added together. Enter a credit only once; departmental details roll up into the total.</p></div><label>Requirements <select id="preset"><option value="2020">2020 EE reference + proposed LA grouping</option><option value="custom">Custom targets</option></select></label></div>
+        <div id="creditCategories" class="credit-categories"></div><div class="total-strip"><span>TOTAL PROGRESS</span><strong id="totalProgress">0 / 128 credits</strong><small id="saveStatus" role="status">Guest · saved on this device</small></div>
+        <div class="department-section"><div class="calculator-head"><div><h2>Within departmental courses</h2><p>The 2020 reference has 27 core theory, 2 core lab, 24 stream theory, 8 stream lab and 15 elective credits. Unallocated departmental credits stay in the total until you classify them.</p></div></div><div id="departmentDetails" class="department-details"></div><div class="basket-heading"><div><h3>Stream core baskets</h3><p>Each of the three baskets needs at least 6 theory and 2 lab credits. Overall: 24 theory and 8 lab credits. Courses count once, in the basket and type you select.</p></div></div><div id="basketDetails" class="basket-grid"></div></div>
+        <div class="calculator-head courses-head"><div><h2>Completed courses</h2><p>Confirm completion before counting imported courses: registration alone does not mean completion. Review every suggested category and basket.</p></div><label class="secondary-button">Import a document<input id="calculatorFile" type="file" accept=".pdf,.txt,.md,.csv,image/png,image/jpeg,image/webp"></label></div>
+        <p class="import-message" id="importMessage" role="status">PDF, text or image · up to 4 MB · sent for AI processing, not stored · review before importing</p><div id="importReview" hidden></div>
+        <form class="course-form" id="courseForm"><label>Course code<input name="code" maxlength="40" placeholder="EE1101"></label><label>Course name<input name="name" maxlength="120" placeholder="Circuits and networks"></label><label>Credits<input name="credits" type="number" min="0" max="30" step="0.5" required placeholder="3"></label><label>Category<select name="category" id="courseCategory" required></select></label><label id="newCourseBasketWrap" hidden>Stream basket<select name="basket" id="newCourseBasket"></select></label><label id="newCourseKindWrap" hidden>Course type<select name="kind" id="newCourseKind"><option value="">Choose type</option><option value="theory">Theory</option><option value="lab">Lab</option></select></label><button class="primary-button" type="submit">Add course</button></form><p class="import-message" id="courseSuggestion" role="status">Enter a course code for a suggested classification.</p><div id="courseList" class="course-list"></div>
+      </section>
+      <section class="workspace-page" id="coursesView" hidden>
+        <div class="page-heading"><div><h1>Courses &amp; <em>instructors.</em></h1><p id="timetableDate"></p></div></div>
+        <p><a class="timetable-link" id="officialTimetable" target="_blank" rel="noreferrer">Open the official department timetable ↗</a></p>
+        <div class="course-filters">
+          <label>Search courses or instructors<input type="search" id="courseSearch" placeholder="Try EE1206 or Myna Vajha"></label>
+          <label>Programme<select id="courseProgram"><option value="">All programmes</option><option>EE B.Tech</option><option>ICDT B.Tech</option><option>M.Tech / PG</option></select></label>
+        </div>
+        <p id="courseResults" role="status"></p>
+        <div class="semester-table-wrap" tabindex="0" role="region" aria-label="Semester timetable">
+          <table class="semester-table"><thead><tr><th scope="col">Code</th><th scope="col">Course</th><th scope="col">Instructor(s)</th><th scope="col">Programme</th><th scope="col">Credits</th><th scope="col">Slot</th><th scope="col">Room</th></tr></thead><tbody id="semesterCourseRows"></tbody></table>
+        </div>
+      </section>
+      <section class="workspace-page" id="resourcesView" hidden><div class="section-kicker">THE KNOWLEDGE DESK / 03</div><div class="page-heading"><div><h1>Sources &amp; <em>useful links.</em></h1><p>Everything behind the assistant, gathered in one place.</p></div><span class="page-number">03</span></div><div class="resource-grid"><a class="resource-card" href="/documents/ee-curriculum.pdf" target="_blank" rel="noreferrer"><span>01 / CURRICULUM ↗</span><strong>EE BTech curriculum</strong><small>2020 batch · updated February 2021</small></a><a class="resource-card" href="https://ee.iith.ac.in/Courses/current_timetable.html" target="_blank" rel="noreferrer"><span>02 / DEPARTMENT ↗</span><strong>EE timetable &amp; slots</strong><small>Indexed snapshot: August–November 2026</small></a><a class="resource-card" href="https://iith.ac.in/academics/calendars-timetables/" target="_blank" rel="noreferrer"><span>03 / INSTITUTE ↗</span><strong>Academic calendars</strong><small>Check official dates and schedules</small></a><a class="resource-card" href="https://ee.iith.ac.in/Academics/UG-Curriculum.html" target="_blank" rel="noreferrer"><span>04 / DEPARTMENT ↗</span><strong>EE undergraduate guidelines</strong><small>Curriculum and department information</small></a><a class="resource-card" href="https://iith.ac.in/academics/" target="_blank" rel="noreferrer"><span>05 / INSTITUTE ↗</span><strong>Academic Office</strong><small>Verify important academic decisions</small></a></div><div class="source-history"><h2>References from this conversation</h2><p>Answer numbers correspond to the references below. Uploaded files are student-provided, not official sources.</p><div id="sourceHistory"><p>No answers yet.</p></div></div></section>
+    </main>
+  </div>
+  <dialog id="accountDialog"><form method="dialog"><button class="dialog-close" aria-label="Close">×</button></form><div class="section-kicker">OPTIONAL ACCOUNT</div><h2>Take your progress <em>with you.</em></h2><p>Guest progress stays on this device. Sign in to save your calculator across devices; chat and attachments are not saved.</p><form id="authForm"><label>Email<input type="email" name="email" autocomplete="email" required></label><label>Password<input type="password" name="password" autocomplete="current-password" minlength="8" required></label><div class="auth-actions"><button type="submit" class="primary-button">Sign in</button><button type="button" class="secondary-button" id="signupButton">Create account</button></div><button type="button" class="text-button" id="recoveryButton">Forgot password?</button><p id="authMessage" role="status"></p></form><div id="signedIn" hidden><p id="accountInfo"></p><button class="secondary-button" id="logoutButton">Sign out</button></div></dialog>
+</body>
+</html>

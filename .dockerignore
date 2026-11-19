@@ -1,0 +1,7 @@
+.git
+.github
+.netlify
+node_modules
+.env
+.env.*
+*.gguf

@@ -1,0 +1,19 @@
+name: Verify
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - name: Build and smoke-test container
+        run: |
+          docker build -t ee-assistant .
+          docker run -d --name ee-assistant -p 127.0.0.1:3000:3000 ee-assistant
+          curl --fail --retry 8 --retry-connrefused http://127.0.0.1:3000/
